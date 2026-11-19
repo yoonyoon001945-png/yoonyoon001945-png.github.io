@@ -23,6 +23,7 @@
   --text:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;
 }
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 html{scroll-behavior:smooth;scroll-padding-top:80px}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--text);font-size:16px;line-height:1.6;word-break:keep-all;-webkit-font-smoothing:antialiased}
 a{color:inherit}
@@ -91,9 +92,21 @@ section.block{padding:56px 0;border-top:1px solid var(--line)}
 
 /* ---------- 업데이트 소식 (블로그) ---------- */
 .filters{display:flex;gap:6px;flex-wrap:wrap}
-.filters button{font:inherit;font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
-.filters button:hover{color:var(--ink)}
-.filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+/* 프로그램 분류 탭 + 더 보기 */
+.cats{display:flex;gap:6px;flex-wrap:wrap}
+.cats button,.filters button{font:inherit;font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;border:1.5px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.cats button span{font-family:var(--num);font-weight:700;margin-left:5px;opacity:.6}
+.cats button:hover,.filters button:hover{color:var(--ink)}
+.cats button[aria-pressed="true"],.filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.app[hidden]{display:none}
+.pager{display:flex;justify-content:center;align-items:center;gap:4px;margin-top:28px}
+.pager button{font:inherit;font-family:var(--num);font-weight:700;font-size:15px;min-width:38px;height:38px;padding:0 10px;border-radius:10px;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.pager button:hover:not([disabled]){background:rgba(0,0,0,.05);color:var(--ink)}
+.pager button[aria-current="page"]{background:var(--ink);color:#fff}
+.pager button[disabled]{opacity:.3;cursor:default}
+.pager span{color:var(--muted);padding:0 4px}
+.pick{font:inherit;font-size:14px;font-weight:600;padding:8px 36px 8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23151A21' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;appearance:none;-webkit-appearance:none;color:var(--ink);cursor:pointer;max-width:100%}
+.sec-head > div:first-child{flex:none}
 
 .posts{list-style:none;margin:0;padding:0}
 .post{display:grid;grid-template-columns:120px 1fr;gap:28px;padding:30px 0;border-top:1px solid var(--line)}
@@ -114,7 +127,6 @@ section.block{padding:56px 0;border-top:1px solid var(--line)}
 .post .body.clip{max-height:9.6em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
 .post .more{margin-top:8px;font:inherit;font-size:14px;font-weight:700;color:var(--c);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .post .empty{color:var(--muted);font-size:15px}
-.morebox{text-align:center;padding-top:24px}
 .status{color:var(--muted);padding:20px 0}
 
 footer{border-top:1px solid var(--line);padding:32px 0 56px;font-size:14px;color:var(--muted)}
@@ -157,7 +169,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="hero">
       <div>
         <h1>직접 만들어 쓰는<br>프로그램 모음</h1>
-        <p>일하다가, 쓰다가 불편했던 걸 직접 고쳐 만들었어요. 새 버전이 나오면 이 페이지에 바로 올라옵니다.</p>
+        <p>새 버전이 나오면 이 페이지에 바로 올라옵니다.</p>
         <div class="links">
           <a class="btn" href="#apps">프로그램 받기</a>
           <a class="btn line" href="#news">업데이트 소식 보기</a>
@@ -171,8 +183,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   <section class="block" id="apps">
     <div class="wrap">
-      <div class="sec-head"><div><h2>프로그램</h2><p>최신 버전을 바로 받을 수 있어요.</p></div></div>
+      <div class="sec-head"><div><h2>프로그램</h2><p>최신 버전을 바로 받을 수 있어요.</p></div><div class="cats" id="cats" role="group" aria-label="분류별 보기"></div></div>
       <div class="apps" id="appList"></div>
+      <nav class="pager" id="appPager" aria-label="프로그램 쪽 이동" hidden></nav>
     </div>
   </section>
 
@@ -183,7 +196,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <div class="filters" id="filters" role="group" aria-label="프로그램별 보기"></div>
       </div>
       <ol class="posts" id="posts"><li class="status">소식을 불러오는 중…</li></ol>
-      <div class="morebox"><button class="btn line" id="moreBtn" hidden>이전 소식 더 보기</button></div>
+      <nav class="pager" id="postPager" aria-label="소식 쪽 이동" hidden></nav>
     </div>
   </section>
 </main>
@@ -196,37 +209,57 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </footer>
 
 <script>
-/* ============ 설정 ============
-   프로그램을 늘리려면 apps에 한 줄 추가. key는 색 이름(g2b, yt) — 새 색은 CSS :root와 .g2b/.yt 처럼 추가 */
+/* ======================== 설정 ========================
+   새 프로그램은 자동으로 나옵니다.
+   - 계정의 "공개" 저장소 중 릴리즈가 하나라도 있으면 프로그램으로 표시
+   - 이름: 저장소 이름 / 설명: 저장소 About 설명 / 분류: 올린 파일(.apk → Android, .exe → Windows)
+   - 숨기고 싶은 저장소는 GitHub 저장소 About의 Topics에 hide 를 추가
+   아래 custom은 선택 사항: 이름·설명·색을 직접 정하고 싶은 저장소만 적으면 됩니다.
+   ====================================================== */
 const CONFIG = {
   owner: "yoonyoon001945-png",
-  apps: [
-    { key:"g2b", repo:"yoon", name:"G2B monitor", short:"G2B", category:"Windows",
-      desc:"나라장터 입찰공고와 개찰결과를 모아 보는 프로그램", icon:"doc", asset:[".exe"] },
-    { key:"yt", repo:"youturbe-morphe-releases", name:"YouTurbe Morphe", short:"YouTurbe", category:"Android",
-      desc:"광고 없이 보는 YouTube 앱", icon:"play", asset:[".apk"], note:"사용기간 코드 필요" },
-    { key:"net", repo:"Y-NetMon", name:"Y-NetMon", short:"NetMon", category:"Windows",
-      desc:"네트워크 연결 상태를 지켜보는 프로그램", icon:"net", asset:[".exe"] }
-  ],
-  pageSize: 6
+  custom: {
+    "yoon": { name:"G2B monitor", short:"G2B", color:"#1A3C8C", icon:"doc",
+              desc:"나라장터 입찰공고와 개찰결과를 모아 보는 프로그램" },
+    "youturbe-morphe-releases": { name:"YouTurbe Morphe", short:"YouTurbe", color:"#D3112E", icon:"play",
+              desc:"광고 없이 보는 YouTube 앱", note:"사용기간 코드 필요" },
+    "y-netmon": { name:"Y-NetMon", short:"NetMon", color:"#0E7A62", icon:"net",
+              desc:"네트워크 연결 상태를 지켜보는 프로그램" }
+  },
+  palette: ["#6B3FC4","#C2561A","#0B7A8C","#9A6B00","#B0236E","#3E5BA9"],
+  postsPerPage: 5,  // 업데이트 소식 한 쪽에 보여 줄 글 수
+  appsPerPage: 6    // 프로그램 한 쪽에 보여 줄 카드 수
 };
-/* ============================== */
+/* ====================================================== */
 
 const ICONS = {
   doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/></svg>',
   net:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>',
-  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>'
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+  win:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18M8 21h8"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18h2"/></svg>',
+  box:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>'
 };
+const TYPES = [                         // 대표 파일을 고르는 순서와 분류
+  [".apk","Android","phone"], [".exe","Windows","win"], [".msi","Windows","win"],
+  [".dmg","macOS","box"], [".zip","기타","box"]
+];
+
 const O = CONFIG.owner;
+const API = "https://api.github.com";
+const H = {headers:{Accept:"application/vnd.github+json"}};
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ymd = s => { const d = new Date(s); return [d.getFullYear(), String(d.getMonth()+1).padStart(2,"0"), String(d.getDate()).padStart(2,"0")]; };
 const size = b => b >= 1048576 ? (b/1048576).toFixed(1)+" MB" : Math.max(1,Math.round(b/1024))+" KB";
+const getJSON = url => fetch(url, H).then(r => { if(!r.ok) throw r.status; return r.json(); });
+const tone = c => `--c:${c};--t:color-mix(in srgb, ${c} 12%, #fff)`;
 
 $("#gh").href = `https://github.com/${O}`;
 $("#avatar").src = `https://github.com/${O}.png?size=60`;
 $("#copy").textContent = `© ${new Date().getFullYear()} yoon`;
 addEventListener("scroll", () => $("#nav").classList.toggle("scrolled", scrollY > 8), {passive:true});
+$("#appList").innerHTML = `<p class="status">프로그램 목록을 불러오는 중…</p>`;
 
 function md(src){
   if(!src || !src.trim()) return "";
@@ -243,42 +276,141 @@ function md(src){
   return out + (ul ? "</ul>" : "");
 }
 
-/* 프로그램 카드 (먼저 틀을 그리고, 데이터가 오면 채움) */
-for(const a of CONFIG.apps){
-  const base = `https://github.com/${O}/${a.repo}/releases`;
-  $("#appList").insertAdjacentHTML("beforeend", `
-    <article class="app ${a.key}" id="app-${a.key}">
-      <div class="ic" aria-hidden="true">${ICONS[a.icon]||""}</div>
+/* 저장소 → 프로그램 정보 */
+function toApp(repo, rel, i){
+  const c = CONFIG.custom[repo.name.toLowerCase()] || {};
+  const last = rel.find(r => !r.prerelease) || rel[0];
+  const assets = last.assets || [];
+  let asset = null, type = null;
+  for(const t of TYPES){ asset = assets.find(a => a.name.toLowerCase().endsWith(t[0])); if(asset){ type = t; break; } }
+  const name = c.name || repo.name.replace(/[-_]releases?$/i, "");
+  return {
+    key: "a" + i, repo: repo.name, name, short: c.short || name,
+    desc: c.desc || repo.description || "",
+    note: c.note || "",
+    category: type ? type[1] : "기타",
+    icon: ICONS[c.icon] || ICONS[type ? type[2] : "box"],
+    color: c.color || CONFIG.palette[i % CONFIG.palette.length],
+    last, asset, rel
+  };
+}
+
+/* 데이터 가져오기: 저장소 목록 → 각 저장소의 릴리즈 */
+getJSON(`${API}/users/${O}/repos?per_page=100&sort=pushed`)
+  .then(repos => repos.filter(r =>
+      !r.fork && !r.archived && !r.private &&
+      r.name.toLowerCase() !== `${O}.github.io`.toLowerCase() &&
+      !(r.topics || []).includes("hide")))
+  .catch(() => Object.keys(CONFIG.custom).map(name => ({name, description:""})))   // 목록을 못 받으면 custom 저장소만
+  .then(repos => Promise.all(repos.map(repo =>
+      getJSON(`${API}/repos/${O}/${repo.name}/releases?per_page=30`)
+        .then(rel => ({repo, rel: rel.filter(r => !r.draft)}))
+        .catch(() => ({repo, rel: []})))))
+  .then(results => {
+    const withRel = results.filter(x => x.rel.length);
+    // 색이 겹치지 않게: custom 먼저, 나머지는 팔레트 순서대로
+    let auto = 0;
+    const apps = withRel.map(({repo, rel}, i) => {
+      const isCustom = !!CONFIG.custom[repo.name.toLowerCase()];
+      return toApp(repo, rel, isCustom ? i : auto++);
+    }).sort((x,y) => new Date(y.last.published_at) - new Date(x.last.published_at));
+    apps.forEach((a,i) => a.key = "a" + i);
+    render(apps);
+  });
+
+let filter = "all", postPage = 1, allPosts = [];
+
+function render(apps){
+  if(!apps.length){
+    $("#appList").innerHTML = `<p class="status">목록을 불러오지 못했어요. <a href="https://github.com/${O}">GitHub</a>에서 확인해 주세요.</p>`;
+    $("#posts").innerHTML = ""; return;
+  }
+
+  /* 프로그램 카드 */
+  $("#appList").innerHTML = apps.map(a => {
+    const [y,m,d] = ymd(a.last.published_at);
+    const href = a.asset ? a.asset.browser_download_url : a.last.html_url;
+    return `
+    <article class="app" id="app-${a.key}" style="${tone(a.color)}">
+      <div class="ic" aria-hidden="true">${a.icon}</div>
       <div class="row1"><h3>${esc(a.name)}</h3><span class="tag">${esc(a.category)}</span></div>
       <p class="d">${esc(a.desc)}</p>
       <div class="act">
-        <a class="get" href="${base}" aria-disabled="true">받기</a>
-        <span class="meta"><span class="vv">v—</span> <span class="when"></span></span>
+        <a class="get" href="${href}">받기${a.asset ? ` <small>${size(a.asset.size)}</small>` : ""}</a>
+        <span class="meta"><span class="vv">${esc(a.last.tag_name)}</span> <span class="when">· ${y}.${m}.${d}</span></span>
         ${a.note ? `<span class="note">${esc(a.note)}</span>` : ""}
       </div>
-    </article>`);
-}
+    </article>`;
+  }).join("");
 
-/* 필터 버튼 */
-let filter = "all", shown = CONFIG.pageSize, allPosts = [];
-const fbox = $("#filters");
-[["all","전체"], ...CONFIG.apps.map(a => [a.key, a.short])].forEach(([k,label]) => {
-  const b = document.createElement("button");
-  b.textContent = label; b.setAttribute("aria-pressed", k === "all");
-  b.onclick = () => { filter = k; shown = CONFIG.pageSize; fbox.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPosts(); };
-  fbox.appendChild(b);
-});
+  /* 프로그램: 분류 탭 + 처음엔 몇 개만, 나머지는 '모두 보기' */
+  let cat = "all", appPage = 1;
+  const cards = [...document.querySelectorAll("#appList .app")];
+  const cats = [...new Set(apps.map(a => a.category))];
+  function showApps(){
+    const idx = apps.map((a,i) => i).filter(i => cat === "all" || apps[i].category === cat);
+    const per = CONFIG.appsPerPage, from = (appPage-1)*per;
+    const visible = new Set(idx.slice(from, from+per));
+    cards.forEach((el, i) => el.hidden = !visible.has(i));
+    pager($("#appPager"), appPage, Math.ceil(idx.length/per), p => { appPage = p; showApps(); $("#apps").scrollIntoView({behavior:"smooth"}); });
+  }
+  const cbox = $("#cats"); cbox.innerHTML = "";
+  if(cats.length > 1){
+    [["all","전체",apps.length], ...cats.map(c => [c, c, apps.filter(a => a.category === c).length])].forEach(([k,label,n]) => {
+      const b = document.createElement("button");
+      b.innerHTML = `${esc(label)}<span>${n}</span>`; b.setAttribute("aria-pressed", k === "all");
+      b.onclick = () => { cat = k; appPage = 1; cbox.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); showApps(); };
+      cbox.appendChild(b);
+    });
+  }
+  showApps();
+
+  /* 업데이트 소식 필터: 프로그램이 4개 이하면 버튼, 많으면 목록 상자 */
+  const fbox = $("#filters"); fbox.innerHTML = "";
+  const opts = [["all","모든 프로그램"], ...apps.map(a => [a.key, a.name])];
+  if(apps.length <= 4){
+    opts.forEach(([k,label], i) => {
+      const b = document.createElement("button");
+      b.textContent = i === 0 ? "전체" : apps[i-1].short; b.setAttribute("aria-pressed", k === "all");
+      b.onclick = () => { filter = k; postPage = 1; fbox.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderPosts(); };
+      fbox.appendChild(b);
+    });
+  } else {
+    const sel = document.createElement("select");
+    sel.className = "pick"; sel.setAttribute("aria-label", "프로그램별 보기");
+    sel.innerHTML = opts.map(([k,label]) => `<option value="${k}">${esc(label)}</option>`).join("");
+    sel.onchange = () => { filter = sel.value; postPage = 1; renderPosts(); };
+    fbox.appendChild(sel);
+  }
+
+  /* 업데이트 소식 */
+  allPosts = apps.flatMap(a => a.rel.map(r => ({...r, app:a})))
+                 .sort((x,y) => new Date(y.published_at) - new Date(x.published_at));
+  renderPosts();
+
+  /* 첫 화면 오른쪽: 가장 최근에 업데이트된 프로그램 2개 (최신이 앞으로) */
+  const two = apps.slice(0, 2).reverse();
+  $("#tiles").innerHTML = two.map((a, i) => {
+    const [y,m,d] = ymd(a.last.published_at);
+    return `<a class="tile" href="#app-${a.key}" style="${tone(a.color)};text-decoration:none">
+      <div class="hd"><div class="ic" aria-hidden="true">${a.icon}</div>
+      <div><div class="nm">${esc(a.name)}</div><div class="when">${y}.${m}.${d}${i === two.length-1 ? `<span class="new">최근 업데이트</span>` : ""}</div></div></div>
+      <div class="ver">${esc(a.last.tag_name)}</div>
+    </a>`;
+  }).join("");
+}
 
 function renderPosts(){
   const list = allPosts.filter(p => filter === "all" || p.app.key === filter);
   const ul = $("#posts");
-  if(!list.length){ ul.innerHTML = `<li class="status">아직 올라온 소식이 없습니다.</li>`; $("#moreBtn").hidden = true; return; }
-  ul.innerHTML = list.slice(0, shown).map(p => {
+  if(!list.length){ ul.innerHTML = `<li class="status">아직 올라온 소식이 없습니다.</li>`; $("#postPager").hidden = true; return; }
+  const per = CONFIG.postsPerPage;
+  ul.innerHTML = list.slice((postPage-1)*per, postPage*per).map(p => {
     const [y,m,d] = ymd(p.published_at);
     const body = md(p.body);
     const long = (p.body||"").split("\n").filter(l => l.trim()).length > 5;
     return `
-    <li class="post ${p.app.key}">
+    <li class="post" style="${tone(p.app.color)}">
       <time datetime="${p.published_at}"><b>${m}.${d}</b>${y}</time>
       <div>
         <div class="pt"><span class="dot"></span><span class="cat">${esc(p.app.name)}</span></div>
@@ -289,49 +421,25 @@ function renderPosts(){
     </li>`;
   }).join("");
   ul.querySelectorAll(".more").forEach(btn => btn.onclick = () => { btn.previousElementSibling.classList.remove("clip"); btn.remove(); });
-  $("#moreBtn").hidden = shown >= list.length;
+  pager($("#postPager"), postPage, Math.ceil(list.length/per), p => { postPage = p; renderPosts(); $("#news").scrollIntoView({behavior:"smooth"}); });
 }
-$("#moreBtn").onclick = () => { shown += CONFIG.pageSize; renderPosts(); };
 
-/* 데이터 가져오기 */
-Promise.all(CONFIG.apps.map(a =>
-  fetch(`https://api.github.com/repos/${O}/${a.repo}/releases?per_page=30`, {headers:{Accept:"application/vnd.github+json"}})
-    .then(r => { if(!r.ok) throw r.status; return r.json(); })
-    .then(rel => ({ app:a, rel: rel.filter(r => !r.draft) }))
-    .catch(() => ({ app:a, rel:null }))
-)).then(results => {
-  const tiles = [];
-  for(const {app:a, rel} of results){
-    const card = $(`#app-${a.key}`), get = card.querySelector(".get");
-    get.removeAttribute("aria-disabled");
-    if(!rel){ card.querySelector(".when").textContent = "버전 정보를 가져오지 못했어요"; continue; }
-    if(!rel.length){ card.querySelector(".when").textContent = "아직 올린 버전이 없어요"; continue; }
-    const last = rel.find(r => !r.prerelease) || rel[0];
-    let asset = null;
-    for(const ext of a.asset){ asset = (last.assets||[]).find(x => x.name.toLowerCase().endsWith(ext)); if(asset) break; }
-    if(asset){ get.href = asset.browser_download_url; get.innerHTML = `받기 <small>${size(asset.size)}</small>`; }
-    else get.href = last.html_url;
-    const [y,m,d] = ymd(last.published_at);
-    card.querySelector(".vv").textContent = last.tag_name;
-    card.querySelector(".when").textContent = `· ${y}.${m}.${d}`;
-    tiles.push({a, last});
-    rel.forEach(r => allPosts.push({...r, app:a}));
+/* 쪽 번호: ‹ 1 2 3 … 9 › (쪽이 1개면 숨김) */
+function pager(box, cur, total, go){
+  box.hidden = total <= 1;
+  if(total <= 1){ box.innerHTML = ""; return; }
+  const nums = [];
+  for(let i = 1; i <= total; i++){
+    if(i === 1 || i === total || Math.abs(i-cur) <= 1) nums.push(i);
+    else if(nums[nums.length-1] !== "…") nums.push("…");
   }
-  allPosts.sort((x,y) => new Date(y.published_at) - new Date(x.published_at));
-  renderPosts();
-
-  /* 첫 화면 오른쪽: 가장 최근에 업데이트된 프로그램 2개 (최신이 앞으로) */
-  tiles.sort((x,y) => new Date(x.last.published_at) - new Date(y.last.published_at));
-  const newest = tiles.length ? tiles[tiles.length-1] : null;
-  $("#tiles").innerHTML = tiles.slice(-2).map(({a,last}) => {
-    const [y,m,d] = ymd(last.published_at);
-    return `<a class="tile ${a.key}" href="#app-${a.key}" style="text-decoration:none">
-      <div class="hd"><div class="ic" aria-hidden="true">${ICONS[a.icon]||""}</div>
-      <div><div class="nm">${esc(a.name)}</div><div class="when">${y}.${m}.${d}${last === newest.last ? `<span class="new">최근 업데이트</span>` : ""}</div></div></div>
-      <div class="ver">${esc(last.tag_name)}</div>
-    </a>`;
-  }).join("");
-});
+  box.innerHTML =
+    `<button type="button" data-p="${cur-1}" aria-label="이전 쪽" ${cur === 1 ? "disabled" : ""}>‹</button>` +
+    nums.map(n => n === "…" ? `<span>…</span>`
+      : `<button type="button" data-p="${n}" ${n === cur ? 'aria-current="page"' : ""}>${n}</button>`).join("") +
+    `<button type="button" data-p="${cur+1}" aria-label="다음 쪽" ${cur === total ? "disabled" : ""}>›</button>`;
+  box.querySelectorAll("button:not([disabled])").forEach(b => b.onclick = () => go(+b.dataset.p));
+}
 </script>
 </body>
 </html>

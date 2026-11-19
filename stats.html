@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>다운로드 통계 · yoon 작업실</title>
+<title>통계 · yoon 작업실</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
@@ -59,6 +59,47 @@ header h1{margin:6px 0 0;font-size:34px;letter-spacing:-.035em;line-height:1.15}
 .note p:last-child{margin:0}
 .status{color:var(--muted);padding:20px 0}
 
+
+/* ---------- 방문자 (GoatCounter) ---------- */
+h2.sec{font-size:22px;letter-spacing:-.03em;margin:8px 0 14px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+h2.sec small{font-size:13px;color:var(--muted);font-weight:600;letter-spacing:0}
+.visit{margin-bottom:44px}
+.vhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.vhead h2.sec{margin:0}
+.range{display:flex;gap:4px;background:#EBECE6;padding:4px;border-radius:12px}
+.range button{font:inherit;font-size:13.5px;font-weight:700;border:0;background:transparent;color:var(--muted);padding:6px 12px;border-radius:9px;cursor:pointer}
+.range button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.kpi div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 22px}
+.kpi span{font-size:13px;color:var(--muted);font-weight:600}
+.kpi b{display:block;font-family:var(--num);font-stretch:80%;font-weight:900;font-size:44px;line-height:1.05;margin-top:4px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.panel h3{margin:0 0 12px;font-size:15px}
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;padding-top:6px}
+.chart div{flex:1;min-width:2px;background:#1A3C8C;border-radius:4px 4px 0 0;position:relative}
+.chart div:hover{background:#2F5BC4}
+.chart div[data-n="0"]{background:#E2E3DD;height:2px !important}
+.axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-family:var(--num)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:12px}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{display:grid;grid-template-columns:1fr 70px 3.5em;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.rows li:first-child{border-top:0}
+.rows .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rows .br{height:7px;border-radius:4px;background:#EBECE6;overflow:hidden}
+.rows .br i{display:block;height:100%;background:var(--c,#1A3C8C);border-radius:4px}
+.rows .n{text-align:right;font-family:var(--num);font-weight:700}
+.rows .empty{display:block;color:var(--muted);border:0}
+.setup{background:var(--card);border:1.5px dashed #C9CCC3;border-radius:18px;padding:22px}
+.setup h3{margin:0 0 6px;font-size:17px}
+.setup ol{margin:8px 0 14px;padding-left:20px;color:#3A434C;font-size:14px}
+.setup ol li{margin:3px 0}
+.setup form{display:flex;gap:8px;flex-wrap:wrap}
+.setup input{flex:1;min-width:220px;font:inherit;font-size:14px;padding:10px 14px;border-radius:11px;border:1.5px solid var(--line);background:#fff}
+.setup input:focus{outline:none;border-color:var(--ink)}
+.err{color:#B3261E;font-size:13.5px;margin:10px 0 0}
+.tokbar{font-size:13px;color:var(--muted);margin-top:10px}
+.tokbar button{font:inherit;font-size:13px;color:var(--muted);background:none;border:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0;margin-left:6px}
+@media (max-width:700px){ .kpi{grid-template-columns:1fr 1fr} .kpi div:first-child{grid-column:1 / -1} }
 @media (max-width:700px){
   .wrap{padding:0 18px}
   .sum{grid-template-columns:1fr 1fr}
@@ -71,15 +112,67 @@ header h1{margin:6px 0 0;font-size:34px;letter-spacing:-.035em;line-height:1.15}
   <header>
     <div>
       <small>관리자용 · 메인 페이지에는 링크되어 있지 않아요</small>
-      <h1>다운로드 통계</h1>
+      <h1>통계</h1>
     </div>
     <div class="links">
-      <a class="btn" href="https://yoonlab.goatcounter.com" target="_blank" rel="noopener">방문자 통계 (GoatCounter)</a>
+      <a class="btn" href="https://yoonlab.goatcounter.com" target="_blank" rel="noopener">GoatCounter 열기</a>
       <a class="btn line" href="./">홈페이지</a>
       <button class="btn line" id="reload" type="button">새로고침</button>
     </div>
   </header>
 
+
+  <section class="visit" id="visit" aria-label="방문자 통계">
+    <div class="vhead">
+      <h2 class="sec">방문자 <small>GoatCounter</small></h2>
+      <div class="range" id="range" hidden>
+        <button type="button" data-d="1">오늘</button>
+        <button type="button" data-d="7" aria-pressed="true">7일</button>
+        <button type="button" data-d="30">30일</button>
+        <button type="button" data-d="90">90일</button>
+      </div>
+    </div>
+
+    <div class="setup" id="setup" hidden>
+      <h3>방문자 통계를 여기서 보려면 API 토큰이 한 번 필요해요</h3>
+      <ol>
+        <li><a href="https://yoonlab.goatcounter.com" target="_blank" rel="noopener">yoonlab.goatcounter.com</a> 로그인 → 오른쪽 위 계정 이름(또는 Settings) → <b>API</b></li>
+        <li><b>New token</b>을 만들고 권한은 <b>Read statistics</b>만 체크</li>
+        <li>만들어진 토큰을 아래에 붙여 넣기</li>
+      </ol>
+      <form id="tokForm">
+        <input id="tokInput" type="password" placeholder="API 토큰 붙여 넣기" autocomplete="off" aria-label="API 토큰">
+        <button class="btn" type="submit">저장하고 불러오기</button>
+      </form>
+      <p class="err" id="tokErr" hidden></p>
+      <p class="tokbar">토큰은 이 브라우저에만 저장되고 GitHub나 파일에는 올라가지 않아요. 다른 PC에서는 한 번 더 넣어야 해요.</p>
+    </div>
+
+    <div id="vbody" hidden>
+      <div class="kpi">
+        <div><span>방문자</span><b id="kVisit">—</b></div>
+        <div><span>받기 버튼 클릭</span><b id="kDown">—</b></div>
+        <div><span>하루 평균 방문</span><b id="kAvg">—</b></div>
+      </div>
+      <div class="panel">
+        <h3>날짜별 방문</h3>
+        <div class="chart" id="chart"></div>
+        <div class="axis"><span id="ax1"></span><span id="ax2"></span></div>
+      </div>
+      <div class="grid2">
+        <div class="panel"><h3>받기 클릭 (프로그램·버전)</h3><ul class="rows" id="rDown"></ul></div>
+        <div class="panel"><h3>많이 본 페이지</h3><ul class="rows" id="rPages"></ul></div>
+        <div class="panel"><h3>들어온 경로</h3><ul class="rows" id="rRefs"></ul></div>
+        <div class="panel"><h3>운영체제</h3><ul class="rows" id="rSys"></ul></div>
+        <div class="panel"><h3>브라우저</h3><ul class="rows" id="rBrw"></ul></div>
+        <div class="panel"><h3>지역</h3><ul class="rows" id="rLoc"></ul></div>
+      </div>
+      <p class="err" id="vErr" hidden></p>
+      <p class="tokbar">API 토큰이 이 브라우저에 저장되어 있어요.<button type="button" id="tokDel">토큰 지우기</button></p>
+    </div>
+  </section>
+
+  <h2 class="sec">다운로드 <small>GitHub 집계</small></h2>
   <section class="sum" id="sum" aria-label="합계">
     <div><span>전체 다운로드</span><b id="total">—</b></div>
     <div><span>프로그램</span><b id="count">—</b></div>
@@ -149,8 +242,88 @@ function load(){
       }).join("");
     });
 }
-$("#reload").onclick = load;
+
+/* ================= 방문자 통계 (GoatCounter API) ================= */
+const GC = "https://yoonlab.goatcounter.com/api/v0";
+const TOK_KEY = "gc_token_yoonlab";
+let days = 7;
+const store = {
+  get(){ try { return localStorage.getItem(TOK_KEY) || ""; } catch(e){ return ""; } },
+  set(v){ try { localStorage.setItem(TOK_KEY, v); } catch(e){} },
+  del(){ try { localStorage.removeItem(TOK_KEY); } catch(e){} }
+};
+const iso = d => d.toISOString().slice(0,10);
+function gc(path, params){
+  const q = new URLSearchParams(params).toString();
+  return fetch(`${GC}${path}?${q}`, {headers:{ "Authorization":"Bearer " + store.get(), "Content-Type":"application/json" }})
+    .then(r => { if(r.status === 401 || r.status === 403) throw "auth"; if(!r.ok) throw r.status; return r.json(); });
+}
+function rows(el, items, color){
+  if(!items.length){ el.innerHTML = `<li class="empty">아직 기록이 없어요</li>`; return; }
+  const max = Math.max(1, ...items.map(x => x.n));
+  el.innerHTML = items.map(x => `<li><span class="nm" title="${esc(x.name)}">${esc(x.name)}</span>
+    <span class="br"><i style="width:${(x.n/max*100).toFixed(1)}%;${color ? "background:"+color : ""}"></i></span><span class="n">${fmt(x.n)}</span></li>`).join("");
+}
+const statList = r => (r.stats || []).map(x => ({ name: x.name || x.id || "(알 수 없음)", n: x.count ?? x.count_unique ?? 0 }));
+
+function showSetup(msg){
+  $("#setup").hidden = false; $("#vbody").hidden = true; $("#range").hidden = true;
+  $("#tokErr").hidden = !msg; $("#tokErr").textContent = msg || "";
+}
+function loadVisits(){
+  if(!store.get()){ showSetup(); return; }
+  $("#setup").hidden = true; $("#vbody").hidden = false; $("#range").hidden = false; $("#vErr").hidden = true;
+  const end = new Date(); end.setDate(end.getDate() + 1);
+  const start = new Date(); start.setDate(start.getDate() - (days - 1));
+  const p = { start: iso(start), end: iso(end) };
+
+  Promise.all([
+    gc("/stats/hits", {...p, daily: true, limit: 100}),
+    gc("/stats/toprefs", {...p, limit: 8}).catch(() => ({stats:[]})),
+    gc("/stats/systems", {...p, limit: 8}).catch(() => ({stats:[]})),
+    gc("/stats/browsers", {...p, limit: 8}).catch(() => ({stats:[]})),
+    gc("/stats/locations", {...p, limit: 8}).catch(() => ({stats:[]}))
+  ]).then(([hits, refs, sys, brw, loc]) => {
+    const all = hits.hits || [];
+    const pages = all.filter(h => !h.event && !String(h.path).startsWith("download/"));
+    const downs = all.filter(h => h.event || String(h.path).startsWith("download/"));
+
+    // 날짜별 합계 (페이지 방문만)
+    const byDay = {};
+    for(let i = 0; i < days; i++){ const d = new Date(start); d.setDate(d.getDate() + i); byDay[iso(d)] = 0; }
+    pages.forEach(h => (h.stats || []).forEach(st => { if(st.day in byDay) byDay[st.day] += (st.daily ?? (st.hourly||[]).reduce((a,b)=>a+b,0)); }));
+    const series = Object.entries(byDay);
+    const visit = pages.reduce((s,h) => s + (h.count ?? 0), 0);
+    const down = downs.reduce((s,h) => s + (h.count ?? 0), 0);
+    $("#kVisit").textContent = fmt(visit);
+    $("#kDown").textContent = fmt(down);
+    $("#kAvg").textContent = (visit / days).toFixed(days === 1 ? 0 : 1);
+
+    const max = Math.max(1, ...series.map(x => x[1]));
+    $("#chart").innerHTML = series.map(([d,n]) => `<div data-n="${n}" style="height:${(n/max*100).toFixed(1)}%" title="${d} · ${n}명"></div>`).join("");
+    $("#ax1").textContent = series[0][0].slice(5).replace("-", ".");
+    $("#ax2").textContent = series[series.length-1][0].slice(5).replace("-", ".");
+
+    rows($("#rDown"), downs.map(h => { const [repo, tag] = String(h.path).replace(/^download\//, "").split("/");
+      const nm = (NAMES[(repo||"").toLowerCase()] || [repo])[0]; return { name: tag ? `${nm} · ${tag}` : nm, n: h.count ?? 0 }; }).sort((a,b) => b.n - a.n).slice(0,10), "#0E7A62");
+    rows($("#rPages"), pages.map(h => ({ name: h.path === "/" ? "/ (홈)" : h.path, n: h.count ?? 0 })).sort((a,b) => b.n - a.n).slice(0,8));
+    rows($("#rRefs"), statList(refs).map(x => ({...x, name: x.name === "" || x.name === "(알 수 없음)" ? "직접 방문 / 알 수 없음" : x.name})));
+    rows($("#rSys"), statList(sys));
+    rows($("#rBrw"), statList(brw));
+    rows($("#rLoc"), statList(loc));
+  }).catch(e => {
+    if(e === "auth"){ store.del(); showSetup("토큰이 맞지 않거나 권한이 없어요. 'Read statistics' 권한으로 다시 만들어 붙여 넣어 주세요."); }
+    else { $("#vErr").hidden = false; $("#vErr").textContent = "방문자 통계를 불러오지 못했어요. 광고 차단(Brave Shields 등)이 goatcounter.com을 막고 있는지 확인해 주세요."; }
+  });
+}
+$("#tokForm").onsubmit = e => { e.preventDefault(); const v = $("#tokInput").value.trim(); if(!v) return; store.set(v); $("#tokInput").value = ""; loadVisits(); };
+$("#tokDel").onclick = () => { store.del(); showSetup(); };
+$("#range").querySelectorAll("button").forEach(b => b.onclick = () => {
+  days = +b.dataset.d; $("#range").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); loadVisits();
+});
+$("#reload").onclick = () => { load(); loadVisits(); };
 load();
+loadVisits();
 </script>
 </body>
 </html>

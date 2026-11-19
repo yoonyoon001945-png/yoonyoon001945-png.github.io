@@ -169,7 +169,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="hero">
       <div>
         <h1>직접 만들어 쓰는<br>프로그램 모음</h1>
-        <p>새 버전이 나오면 이 페이지에 바로 올라옵니다.</p>
+        <p>일하다가, 쓰다가 불편했던 걸 직접 고쳐 만들었어요. 새 버전이 나오면 이 페이지에 바로 올라옵니다.</p>
         <div class="links">
           <a class="btn" href="#apps">프로그램 받기</a>
           <a class="btn line" href="#news">업데이트 소식 보기</a>
@@ -336,7 +336,7 @@ function render(apps){
       <div class="row1"><h3>${esc(a.name)}</h3><span class="tag">${esc(a.category)}</span></div>
       <p class="d">${esc(a.desc)}</p>
       <div class="act">
-        <a class="get" href="${href}">받기${a.asset ? ` <small>${size(a.asset.size)}</small>` : ""}</a>
+        <a class="get" href="${href}" data-track="${esc(a.repo)}/${esc(a.last.tag_name)}" data-title="${esc(a.name)} ${esc(a.last.tag_name)}">받기${a.asset ? ` <small>${size(a.asset.size)}</small>` : ""}</a>
         <span class="meta"><span class="vv">${esc(a.last.tag_name)}</span> <span class="when">· ${y}.${m}.${d}</span></span>
         ${a.note ? `<span class="note">${esc(a.note)}</span>` : ""}
       </div>
@@ -440,6 +440,16 @@ function pager(box, cur, total, go){
     `<button type="button" data-p="${cur+1}" aria-label="다음 쪽" ${cur === total ? "disabled" : ""}>›</button>`;
   box.querySelectorAll("button:not([disabled])").forEach(b => b.onclick = () => go(+b.dataset.p));
 }
+
+/* 받기 버튼 클릭 기록 (GoatCounter 이벤트: download/저장소/버전) */
+document.addEventListener("click", e => {
+  const a = e.target.closest("a.get[data-track]");
+  if(a && window.goatcounter && window.goatcounter.count)
+    window.goatcounter.count({ path: "download/" + a.dataset.track, title: a.dataset.title, event: true });
+});
 </script>
+
+<!-- 방문자 통계: GoatCounter (관리자 대시보드 https://yoonlab.goatcounter.com 에서만 보임) -->
+<script data-goatcounter="https://yoonlab.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

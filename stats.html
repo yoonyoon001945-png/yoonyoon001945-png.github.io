@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>다운로드 통계 · yoon 작업실</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --paper:#F4F4F0; --card:#fff; --ink:#151A21; --muted:#6A727A; --line:#E2E3DD;
+  --num:"Archivo","Pretendard Variable",sans-serif;
+  --text:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--text);font-size:15px;line-height:1.55;word-break:keep-all;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:3px solid #F2B705;outline-offset:2px;border-radius:6px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+
+header{padding:48px 0 28px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+header small{font-size:13px;font-weight:600;color:var(--muted)}
+header h1{margin:6px 0 0;font-size:34px;letter-spacing:-.035em;line-height:1.15}
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;padding:10px 16px;border-radius:11px;font-weight:700;font-size:14px;text-decoration:none;background:var(--ink);color:#fff;border:0;cursor:pointer;font-family:inherit}
+.btn.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.line:hover{box-shadow:inset 0 0 0 1.5px var(--ink)}
+
+/* 합계 */
+.sum{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:28px}
+.sum div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.sum span{font-size:13px;color:var(--muted);font-weight:600}
+.sum b{display:block;font-family:var(--num);font-stretch:80%;font-weight:900;font-size:44px;line-height:1.05;margin-top:4px;letter-spacing:-.01em}
+.sum div:first-child b{font-size:64px}
+
+/* 프로그램별 */
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.app{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}
+.app .hd{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.app h2{margin:0;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+.app h2 i{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.app .tot{font-family:var(--num);font-stretch:80%;font-weight:900;font-size:34px;color:var(--c);line-height:1}
+.app .sub{font-size:13px;color:var(--muted);margin:4px 0 14px}
+.app table{width:100%;border-collapse:collapse;font-size:14px}
+.app td{padding:7px 0;border-top:1px solid var(--line);vertical-align:middle}
+.app td.v{font-family:var(--num);font-weight:800;width:6.5em}
+.app td.d{color:var(--muted);width:6.5em;font-size:13px}
+.app td.bar div{height:8px;border-radius:4px;background:var(--t);overflow:hidden}
+.app td.bar div i{display:block;height:100%;background:var(--c);border-radius:4px}
+.app td.n{text-align:right;font-family:var(--num);font-weight:700;width:4.5em}
+.app .rest{font-size:13px;color:var(--muted);margin-top:8px}
+
+.note{margin:36px 0 56px;padding:18px 20px;border-radius:14px;background:#EBECE6;font-size:13.5px;color:#444C55}
+.note p{margin:0 0 6px}
+.note p:last-child{margin:0}
+.status{color:var(--muted);padding:20px 0}
+
+@media (max-width:700px){
+  .wrap{padding:0 18px}
+  .sum{grid-template-columns:1fr 1fr}
+  .sum div:first-child{grid-column:1 / -1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <small>관리자용 · 메인 페이지에는 링크되어 있지 않아요</small>
+      <h1>다운로드 통계</h1>
+    </div>
+    <div class="links">
+      <a class="btn" href="https://yoonlab.goatcounter.com" target="_blank" rel="noopener">방문자 통계 (GoatCounter)</a>
+      <a class="btn line" href="./">홈페이지</a>
+      <button class="btn line" id="reload" type="button">새로고침</button>
+    </div>
+  </header>
+
+  <section class="sum" id="sum" aria-label="합계">
+    <div><span>전체 다운로드</span><b id="total">—</b></div>
+    <div><span>프로그램</span><b id="count">—</b></div>
+    <div><span>공개 버전</span><b id="vers">—</b></div>
+  </section>
+
+  <main class="apps" id="apps"><p class="status">불러오는 중…</p></main>
+
+  <div class="note">
+    <p><b>다운로드 수</b>는 GitHub가 세는 실제 파일 다운로드 횟수예요. 홈페이지 받기 버튼, GitHub 릴리즈 페이지, 앱 안의 업데이트로 받은 것을 모두 합친 숫자입니다. 설치 파일(.exe .apk .msi .dmg .zip)만 셌고, latest.json이나 아이콘 같은 부속 파일은 빼고 계산했어요.</p>
+    <p><b>홈페이지 받기 버튼 클릭 수</b>와 <b>방문자 수</b>는 GoatCounter에 로그인해서 확인하세요. 받기 클릭은 <code>download/…</code> 이벤트로 기록돼요.</p>
+    <p><b>내 방문은 빼고 세려면</b> 내 브라우저에서 <a href="./#toggle-goatcounter">이 링크</a>를 한 번 열어 두세요. 그 브라우저의 방문은 통계에 들어가지 않아요(다시 열면 해제).</p>
+  </div>
+</div>
+
+<script>
+const O = "yoonyoon001945-png";
+const NAMES = { "yoon":["G2B monitor","#1A3C8C"], "youturbe-morphe-releases":["YouTurbe Morphe","#D3112E"], "y-netmon":["Y-NetMon","#0E7A62"] };
+const PALETTE = ["#6B3FC4","#C2561A","#0B7A8C","#9A6B00","#B0236E","#3E5BA9"];
+const EXT = [".exe",".apk",".msi",".dmg",".zip"];
+const H = {headers:{Accept:"application/vnd.github+json"}};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => n.toLocaleString("ko-KR");
+const ymd = s => { const d = new Date(s); return `${String(d.getFullYear()).slice(2)}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`; };
+const getJSON = u => fetch(u, H).then(r => { if(!r.ok) throw r.status; return r.json(); });
+
+function load(){
+  $("#apps").innerHTML = `<p class="status">불러오는 중…</p>`;
+  getJSON(`https://api.github.com/users/${O}/repos?per_page=100&sort=pushed`)
+    .then(rs => rs.filter(r => !r.fork && !r.private && r.name.toLowerCase() !== `${O}.github.io`))
+    .catch(() => Object.keys(NAMES).map(name => ({name})))
+    .then(rs => Promise.all(rs.map(r =>
+      getJSON(`https://api.github.com/repos/${O}/${r.name}/releases?per_page=100`)
+        .then(rel => ({r, rel: rel.filter(x => !x.draft)})).catch(() => ({r, rel: []})))))
+    .then(list => {
+      let auto = 0;
+      const apps = list.filter(x => x.rel.length).map(({r, rel}) => {
+        const [name, color] = NAMES[r.name.toLowerCase()] || [r.name.replace(/[-_]releases?$/i,""), PALETTE[auto++ % PALETTE.length]];
+        const vers = rel.map(x => ({
+          tag: x.tag_name, date: x.published_at,
+          n: (x.assets||[]).filter(a => EXT.some(e => a.name.toLowerCase().endsWith(e))).reduce((s,a) => s + a.download_count, 0)
+        }));
+        return { name, color, vers, total: vers.reduce((s,v) => s + v.n, 0) };
+      }).sort((a,b) => b.total - a.total);
+
+      $("#total").textContent = fmt(apps.reduce((s,a) => s + a.total, 0));
+      $("#count").textContent = apps.length;
+      $("#vers").textContent = apps.reduce((s,a) => s + a.vers.length, 0);
+
+      if(!apps.length){ $("#apps").innerHTML = `<p class="status">불러오지 못했어요. 잠시 후 새로고침해 주세요.</p>`; return; }
+      $("#apps").innerHTML = apps.map(a => {
+        const max = Math.max(1, ...a.vers.map(v => v.n));
+        const top = a.vers.slice(0, 8);
+        const rest = a.vers.slice(8);
+        return `
+        <article class="app" style="--c:${a.color};--t:color-mix(in srgb, ${a.color} 12%, #fff)">
+          <div class="hd"><h2><i></i>${esc(a.name)}</h2><span class="tot">${fmt(a.total)}</span></div>
+          <p class="sub">최신 ${esc(a.vers[0].tag)} · ${fmt(a.vers[0].n)}회 · 버전 ${a.vers.length}개</p>
+          <table>${top.map(v => `
+            <tr><td class="v">${esc(v.tag)}</td><td class="d">${ymd(v.date)}</td>
+            <td class="bar"><div><i style="width:${(v.n/max*100).toFixed(1)}%"></i></div></td>
+            <td class="n">${fmt(v.n)}</td></tr>`).join("")}
+          </table>
+          ${rest.length ? `<p class="rest">이전 버전 ${rest.length}개 · ${fmt(rest.reduce((s,v) => s + v.n, 0))}회</p>` : ""}
+        </article>`;
+      }).join("");
+    });
+}
+$("#reload").onclick = load;
+load();
+</script>
+</body>
+</html>
